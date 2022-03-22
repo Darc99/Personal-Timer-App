@@ -9,15 +9,27 @@ import { RoundedBtn } from '../../components/RoundedBtn';
 
 export const Timer = ({ focusSubject }) => {
   const [isStarted, setisStarted] = useState(false);
+  const [progress, setProgress] = useState(1);
+
+  const onProgress = (progress) => {
+    setProgress(progress)
+  }
 
   return (
     <View style={styles.container}>
       <View style={styles.countdown}>
-        <CountDown isPaused={!isStarted} />
+        <CountDown isPaused={!isStarted} onProgress={onProgress}/>
       </View>
       <View style={{ paddingTop: spacing.xxl }}>
         <Text style={styles.title}>Focus on: </Text>
         <Text style={styles.task}>{focusSubject}</Text>
+      </View>
+      <View style={{paddingTop: spacing.sm}}>
+        <ProgressBar 
+          progress={progress}
+          color='#5e84e2'
+          style={{height:10}}
+        />
       </View>
       <View style={styles.btnWrapper}>
       {
