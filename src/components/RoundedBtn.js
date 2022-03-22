@@ -31,4 +31,4 @@ const styles = (size) =>
       color: 'white',
       fontSize: size / 3,
     },
-  });
+});
