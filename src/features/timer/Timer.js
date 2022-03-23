@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Text, View, StyleSheet } from 'react-native';
+import { Text, View, StyleSheet, Platform, Vibration } from 'react-native';
 import { ProgressBar } from 'react-native-paper';
 
 import { colors } from '../../utils/colors';
@@ -8,8 +8,11 @@ import { CountDown } from '../../components/CounterDown';
 import { RoundedBtn } from '../../components/RoundedBtn';
 import { Timing } from './Timing';
 
+const DEFAULT_TIME = 0.1;
 export const Timer = ({ focusSubject }) => {
-  const [minutes, setMinutes] = useState(0.1)
+
+  const interval = React.useRef(null);
+  const [minutes, setMinutes] = useState(DEFAULT_TIME);
   const [isStarted, setisStarted] = useState(false);
   const [progress, setProgress] = useState(1);
 
@@ -23,10 +26,31 @@ export const Timer = ({ focusSubject }) => {
     setisStarted(false);
   }
 
+  const vibrate = () => {
+    if (Platform.OS === 'ios') {
+      const interval = setInterval(() => Vibration.vibrate(), 1000);
+      setTimeout(() => clearInterval(interval), 1000);
+    } else {
+      Vibration.vibrate(1000)
+    }
+  }
+
+  const onEnd = () => {
+    vibrate();
+    setMinutes(DEFAULT_TIME);
+    setProgress(1);
+    setisStarted(false);
+  }
+
   return (
     <View style={styles.container}>
       <View style={styles.countdown}>
-        <CountDown minutes={minutes} isPaused={!isStarted} onProgress={onProgress}/>
+        <CountDown 
+          minutes={minutes} 
+          isPaused={!isStarted} 
+          onProgress={onProgress} 
+          onEnd={onEnd}
+        />
       </View>
       <View style={{ paddingTop: spacing.xxl }}>
         <Text style={styles.title}>Focus on: </Text>

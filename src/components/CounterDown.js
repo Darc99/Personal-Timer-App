@@ -8,7 +8,7 @@ const minutesToMillis = (min) => min * 1000 * 60;
 
 const formatTime = (time) => time < 10 ? `0${time}` : time
 
-export const CountDown = ({ minutes = 15, isPaused, onProgress}) => {
+export const CountDown = ({ minutes = 15, isPaused, onProgress, onEnd}) => {
   const interval = React.useRef(null);
   const [millis, setMillis] = useState(null);
   const minute = Math.floor(millis/1000/60) % 60;
@@ -16,7 +16,8 @@ export const CountDown = ({ minutes = 15, isPaused, onProgress}) => {
   const countDown = () => {
     setMillis((time) => {
       if (time === 0) {
-        
+        clearInterval(interval.current);
+        onEnd();
         return time;
       }
       const timeLeft = time - 1000;
