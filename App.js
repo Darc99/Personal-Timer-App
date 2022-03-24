@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, Platform } from 'react-native';
+import { StyleSheet, Text, View, Platform, AsyncStorage } from 'react-native';
 
 import { Focus } from './src/features/focus/Focus';
 import { FocusHistory } from './src/features/focus/FocusHistory';
@@ -24,6 +24,34 @@ export default function App() {
     setFocusHistory([]);
   }
 
+  const saveFocusHistory = async () => {
+    try {
+      await AsyncStorage.setItem("focusHistory", JSON.stringify(focusHistory))
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  const loadFocusHistory = async () => {
+    try {
+      const history = await AsyncStorage.getItem("focusHistory");
+      if (history && JSON.parse(history).length) {
+        setFocusHistory(JSON.parse(history));
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
+  useEffect(() => {
+    loadFocusHistory();
+  }, [])
+  
+
+  useEffect(() => {
+    saveFocusHistory();
+  }, [focusHistory])
+  
 
   return (
     <View style={styles.container}>
